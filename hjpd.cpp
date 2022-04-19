@@ -129,15 +129,14 @@ float dotProduct(vector<float> input1, vector<float> input2) {
 }
 
 // Calculate distances from joints
-Matrix calcDistances(Matrix& input) {
+Matrix jointPosDiff_X(Matrix& input) {
     Matrix distances;
-    for (int i = 0; i < input.size(); i = i + 20) {
-        Row row(5);
-        row[0] = euclDist(input[i][2], input[i][3], input[i][4], input[i+3][2], input[i+3][3], input[i+3][4] ); // Dist between Joints 1 and 4
-        row[1] = euclDist(input[i][2], input[i][3], input[i][4], input[i+7][2], input[i+7][3], input[i+7][4] ); // Dist between Joints 1 and 8  
-        row[2] = euclDist(input[i][2], input[i][3], input[i][4], input[i+11][2], input[i+11][3], input[i+11][4] ); // Dist between Joints 1 and 12
-        row[3] = euclDist(input[i][2], input[i][3], input[i][4], input[i+15][2], input[i+15][3], input[i+15][4] ); // Dist between Joints 1 and 15
-        row[4] = euclDist(input[i][2], input[i][3], input[i][4], input[i+19][2], input[i+19][3], input[i+19][4] ); // Dist between Joints 1 and 20
+    for (int i = 0; i < input.size(); i = i + 20) { // i = Frame Number
+        Row row(19);    // Distance from Joints 2 to 20 with respect to Joint 1
+        // JPD Calcs for each joint with reference to skeleton centroid (joint 1)
+        for (int j = 1; j < 20; j++){               // j = Joint Number
+            row[j-1] = input[i][j] - input[i][0]; 
+        }
         distances.push_back(row);
     }
 
@@ -145,52 +144,19 @@ Matrix calcDistances(Matrix& input) {
     return distances;
 }
 
-Matrix calcAngles(Matrix& input) {
-    Matrix angles;
 
-    for (int i = 0; i < input.size(); i = i + 20) {
-        Row row(5);
-        // Joint Coordinates
-        jointCoord j1(input[i][2],       input[i][3],    input[i][4]);       // Joint 1
-        jointCoord j4(input[i+3][2],     input[i+3][3],  input[i+3][4]);     // Joint 4
-        jointCoord j8(input[i+7][2],     input[i+7][3],  input[i+7][4]);     // Joint 8
-        jointCoord j12(input[i+11][2],   input[i+11][3], input[i+11][4]);    // Joint 12
-        jointCoord j16(input[i+15][2],   input[i+15][3], input[i+15][4]);    // Joint 16
-        jointCoord j20(input[i+19][2],   input[i+19][3], input[i+19][4]);    // Joint 20
-
-        // Vectors
-        Row v1_4 = {(j4.x - j1.x), (j4.y - j1.y), (j4.z - j1.z)};     // From Joint 1 to 4
-        Row v1_8 = {(j8.x - j1.x), (j8.y - j1.y), (j8.z - j1.z)};     // From Joint 1 to 8
-        Row v1_12 = {(j12.x - j1.x), (j12.y - j1.y), (j12.z - j1.z)}; // From Joint 1 to 12
-        Row v1_16 = {(j16.x - j1.x), (j16.y - j1.y), (j16.z - j1.z)}; // From Joint 1 to 16
-        Row v1_20 = {(j20.x - j1.x), (j20.y - j1.y), (j20.z - j1.z)}; // From Joint 1 to 20
-
-        // Calculate Angles between vectors
-        row[0] = acos( dotProduct(v1_4, v1_8)/(magnitude(v1_4)*magnitude(v1_8)));
-        row[1] = acos( dotProduct(v1_8, v1_16)/(magnitude(v1_8)*magnitude(v1_16)));
-        row[2] = acos( dotProduct(v1_16, v1_20)/(magnitude(v1_16)*magnitude(v1_20)));
-        row[3] = acos( dotProduct(v1_20, v1_12)/(magnitude(v1_20)*magnitude(v1_12)));
-        row[4] = acos( dotProduct(v1_12, v1_4)/(magnitude(v1_12)*magnitude(v1_4)));
-        angles.push_back(row);
-
-    }
-    return angles;
-}
-
-vector<float> computeHistogram(vector< vector<float> >& input, int frames, int index) {
+vector<float> computeHistogram(Matrix& input, int frames, int index) {
     // Determine number of bins
     int numData = input.size();   // 5 data points per row
     int bins = sqrt(numData);       // Number of bins determined by square root of number of data points
     float minVal, maxVal;
-    minVal = maxVal = input[0][0];
+    minVal = maxVal = input[0][index];
 
     // Find Maximum and Minimum values in the input data array
     vector<float>::iterator it_min, it_max;
     for (int i = 0; i < input.size(); i++) {
-        it_min = min_element(input[i].begin(), input[i].end());
-        it_max = max_element(input[i].begin(), input[i].end());
-        if (*it_min < minVal) {minVal = *it_min;}
-        if (*it_max > maxVal) {maxVal = *it_max;}
+        if (input[i][index] < minVal) {minVal = input[i][index];}
+        if (input[i][index] > maxVal) {maxVal = input[i][index];}
     }
     // Populate the Histogram
     Row histogram (bins, 0);

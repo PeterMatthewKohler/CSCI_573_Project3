@@ -177,20 +177,17 @@ Matrix calcAngles(Matrix& input) {
     return angles;
 }
 
-vector<float> computeHistogram(vector< vector<float> >& input, int frames, int index) {
+vector<float> computeHistogram(Matrix& input, int frames, int index) {
     // Determine number of bins
     int numData = input.size();   // 5 data points per row
     int bins = sqrt(numData);       // Number of bins determined by square root of number of data points
     float minVal, maxVal;
-    minVal = maxVal = input[0][0];
+    minVal = maxVal = input[0][index];
 
     // Find Maximum and Minimum values in the input data array
-    vector<float>::iterator it_min, it_max;
     for (int i = 0; i < input.size(); i++) {
-        it_min = min_element(input[i].begin(), input[i].end());
-        it_max = max_element(input[i].begin(), input[i].end());
-        if (*it_min < minVal) {minVal = *it_min;}
-        if (*it_max > maxVal) {maxVal = *it_max;}
+        if (input[i][index] < minVal) {minVal = input[i][index];}
+        if (input[i][index] > maxVal) {maxVal = input[i][index];}
     }
     // Populate the Histogram
     Row histogram (bins, 0);
