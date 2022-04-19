@@ -206,6 +206,12 @@ vector<float> computeHistogram(vector< vector<float> >& input, int frames, int i
         histogram[i] /= frames;
         sum += histogram[i];
     }
+            
+    // cout << "Bins: " << bins << ", Binwidth: " << binWidth << ", Sum: " << sum << endl;
+    // for (int i = 0; i < histogram.size(); i++){
+    //     cout << histogram[i] << ", ";
+    // }
+    // cout << endl;
 
     return histogram;
     
@@ -227,33 +233,26 @@ string getcwd()
 int main(int argc, char** argv) {
     // Determine Working Directory Path
     string workingDirectory = getcwd();
-    ofstream output_file;
     // Based on argument inputs either work on Test or Train datasets
     if (argc > 1) {
-        std::cout << argv[1] << endl;
-        std::cout << strcmp(argv[1], "train") << endl;
+        cout << argv[1] << endl;
+        cout << strcmp(argv[1], "train") << endl;
         if (!strcmp(argv[1], "train")) {
             workingDirectory.append("/dataset/train");
-            std::cout << "Using training dataset." << endl;
-            // Output File
-            output_file.open("rad_d1");
-
+            cout << "Using training dataset." << endl;
             }
         else if (!strcmp(argv[1], "test")) {
             workingDirectory.append("/dataset/test");
-            std::cout << "Using testing dataset." << endl;
-            // Output File
-            output_file.open("rad_d1.t");
+            cout << "Using testing dataset." << endl;
         }
         else {
             //workingDirectory.append("/dataset/test");
-            std::cout << "No input argument given. Defaulting to training data." << endl;
-            // Output File
-            output_file.open("rad_d1");
+            cout << "No input argument given. Defaulting to immediate directory." << endl;
         }
     }
 
     // Set new working directory
+    cout << workingDirectory << endl;
     chdir(workingDirectory.c_str()); 
 
     // Arrays to Store data and histograms
@@ -268,11 +267,14 @@ int main(int argc, char** argv) {
     vector<float> tempAngH;
     vector<float> finalAngH;
 
+    // Output File
+    ofstream output_file("test.txt");
+
     int frames; // Num Frames per text file
     // Get filenames of all textfiles in directory
     vector<string> result = glob("*skeleton_proj.txt"); 
     for(size_t i = 0; i< result.size(); ++i){
-        std::cout << "Opening file: " << result[i] << '\n';
+        cout << "Opening file: " << result[i] << '\n';
         temp_data_array = getData(result[i]);               // Get data values from individual text file
         final_data_array = checkNAN(temp_data_array);        // Check for NaN values in joint data, and delete individual joint if found.
         
@@ -308,9 +310,12 @@ int main(int argc, char** argv) {
 
     }
 
+
+
+
     // Close file
     output_file.close();
-    std::cout << "All done." << endl;
+    cout << "All done." << endl;
 
 }
 
