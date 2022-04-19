@@ -46,7 +46,7 @@ vector<string> glob(const string& pattern) {
 }
 
 
-vector< vector<float> > getData(string filename) {
+Matrix getData(string filename) {
     // Define Matrix to hold data for this text file
     Matrix data;
 
@@ -129,7 +129,7 @@ float dotProduct(vector<float> input1, vector<float> input2) {
 }
 
 // Calculate distances from joints
-vector< vector<float> > calcDistances(vector< vector<float> >& input) {
+Matrix calcDistances(Matrix& input) {
     Matrix distances;
     for (int i = 0; i < input.size(); i = i + 20) {
         Row row(5);
@@ -145,7 +145,7 @@ vector< vector<float> > calcDistances(vector< vector<float> >& input) {
     return distances;
 }
 
-vector< vector<float> > calcAngles(vector< vector<float> >& input) {
+Matrix calcAngles(Matrix& input) {
     Matrix angles;
 
     for (int i = 0; i < input.size(); i = i + 20) {
@@ -159,11 +159,11 @@ vector< vector<float> > calcAngles(vector< vector<float> >& input) {
         jointCoord j20(input[i+19][2],   input[i+19][3], input[i+19][4]);    // Joint 20
 
         // Vectors
-        vector<float> v1_4 = {(j4.x - j1.x), (j4.y - j1.y), (j4.z - j1.z)};     // From Joint 1 to 4
-        vector<float> v1_8 = {(j8.x - j1.x), (j8.y - j1.y), (j8.z - j1.z)};     // From Joint 1 to 8
-        vector<float> v1_12 = {(j12.x - j1.x), (j12.y - j1.y), (j12.z - j1.z)}; // From Joint 1 to 12
-        vector<float> v1_16 = {(j16.x - j1.x), (j16.y - j1.y), (j16.z - j1.z)}; // From Joint 1 to 16
-        vector<float> v1_20 = {(j20.x - j1.x), (j20.y - j1.y), (j20.z - j1.z)}; // From Joint 1 to 20
+        Row v1_4 = {(j4.x - j1.x), (j4.y - j1.y), (j4.z - j1.z)};     // From Joint 1 to 4
+        Row v1_8 = {(j8.x - j1.x), (j8.y - j1.y), (j8.z - j1.z)};     // From Joint 1 to 8
+        Row v1_12 = {(j12.x - j1.x), (j12.y - j1.y), (j12.z - j1.z)}; // From Joint 1 to 12
+        Row v1_16 = {(j16.x - j1.x), (j16.y - j1.y), (j16.z - j1.z)}; // From Joint 1 to 16
+        Row v1_20 = {(j20.x - j1.x), (j20.y - j1.y), (j20.z - j1.z)}; // From Joint 1 to 20
 
         // Calculate Angles between vectors
         row[0] = acos( dotProduct(v1_4, v1_8)/(magnitude(v1_4)*magnitude(v1_8)));
@@ -193,7 +193,7 @@ vector<float> computeHistogram(vector< vector<float> >& input, int frames, int i
         if (*it_max > maxVal) {maxVal = *it_max;}
     }
     // Populate the Histogram
-    vector<float> histogram (bins, 0);
+    Row histogram (bins, 0);
     float binWidth = (maxVal - minVal) / bins;
     for (int i = 0; i < input.size(); i++) {
         for (int k = 0; k < bins; k++) {
@@ -227,6 +227,7 @@ string getcwd()
 int main(int argc, char** argv) {
     // Determine Working Directory Path
     string workingDirectory = getcwd();
+    string outFileName;
     ofstream output_file;
     // Based on argument inputs either work on Test or Train datasets
     if (argc > 1) {
@@ -237,6 +238,7 @@ int main(int argc, char** argv) {
             std::cout << "Using training dataset." << endl;
             // Output File
             output_file.open("rad_d1");
+            outFileName = "rad_d1";
 
             }
         else if (!strcmp(argv[1], "test")) {
@@ -244,12 +246,14 @@ int main(int argc, char** argv) {
             std::cout << "Using testing dataset." << endl;
             // Output File
             output_file.open("rad_d1.t");
+            outFileName = "rad_d1.t";
         }
         else {
             //workingDirectory.append("/dataset/test");
             std::cout << "No input argument given. Defaulting to training data." << endl;
             // Output File
             output_file.open("rad_d1");
+            outFileName = "rad_d1";
         }
     }
 
@@ -257,16 +261,16 @@ int main(int argc, char** argv) {
     chdir(workingDirectory.c_str()); 
 
     // Arrays to Store data and histograms
-    vector< vector<float> > temp_data_array;
-    vector< vector<float> > temp_dist_array;
-    vector< vector<float> > temp_angle_array;
-    vector< vector<float> > final_data_array;
+    Matrix temp_data_array;
+    Matrix temp_dist_array;
+    Matrix temp_angle_array;
+    Matrix final_data_array;
     
-    vector<float> featureVector;
-    vector<float> tempDistH;
-    vector<float> finalDistH;
-    vector<float> tempAngH;
-    vector<float> finalAngH;
+    Row featureVector;
+    Row tempDistH;
+    Row finalDistH;
+    Row tempAngH;
+    Row finalAngH;
 
     int frames; // Num Frames per text file
     // Get filenames of all textfiles in directory
@@ -310,7 +314,7 @@ int main(int argc, char** argv) {
 
     // Close file
     output_file.close();
-    std::cout << "All done." << endl;
+    std::cout << "All done. Writing feature vectors to file: " << outFileName << endl;
 
 }
 
