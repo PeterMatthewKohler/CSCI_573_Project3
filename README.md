@@ -1,7 +1,7 @@
 Compilation and Execution Instructions: \
 \
 1.) Extract the folder from the tarball into a single location. Ensure that all the files extracted are in the same folder. \
-There should be  3 *.cpp programs files (rad.cpp, hjpd.cpp, and hod.cpp), 1 folder called "dataset" and then a README file. \
+There should be  3 *.cpp programs files (rad.cpp, hjpd.cpp, and hod.cpp), 1 folder called "dataset", the generated skeleton based representation data, and then a README file. \
 All of these should be in the same directory \
 2.) To compile each of the programs use the following commands in a linux terminal: \
 \
