@@ -5,7 +5,7 @@ There should be  3 *.cpp programs files (rad.cpp, hjpd.cpp, and hod.cpp), 1 fold
 All of these should be in the same directory \
 2.) To compile each of the programs use the following commands in a linux terminal: \
 \
-NOTE: Each of these programs requires an input argument of either "train" or "test". Selecting "train" will use the training dataset, "test" will use the testing dataset. \
+NOTE: Each of these programs requires an input argument of either "train" or "test". Using "train" will use the training dataset, "test" will use the testing dataset. \
 \
 RAD: \
 g++ -std=c++11 rad.cpp -o RAD \
