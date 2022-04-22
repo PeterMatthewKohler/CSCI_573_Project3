@@ -1,7 +1,8 @@
 Compilation and Execution Instructions: \
 \
 1.) Extract the folder from the tarball into a single location. Ensure that all the files extracted are in the same folder. \
-There should be five. 3 .cpp programs (rad.cpp, hjpd.cpp, and hod.cpp). There should be 1 folder called "dataset" and then a README. \
+There should be  3 *.cpp programs files (rad.cpp, hjpd.cpp, and hod.cpp), 1 folder called "dataset" and then a README file. \
+All of these should be in the same directory \
 2.) To compile each of the programs use the following commands in a linux terminal: \
 \
 NOTE: Each of these programs requires an input argument of either "train" or "test". Selecting "train" will use the training dataset, "test" will use the testing dataset. \
