@@ -238,7 +238,7 @@ Matrix calcDistances(Matrix& input) {
         row[0] = euclDist(input[i][2], input[i][3], input[i][4], input[i+3][2], input[i+3][3], input[i+3][4] ); // Dist between Joints 1 and 4
         row[1] = euclDist(input[i][2], input[i][3], input[i][4], input[i+7][2], input[i+7][3], input[i+7][4] ); // Dist between Joints 1 and 8  
         row[2] = euclDist(input[i][2], input[i][3], input[i][4], input[i+11][2], input[i+11][3], input[i+11][4] ); // Dist between Joints 1 and 12
-        row[3] = euclDist(input[i][2], input[i][3], input[i][4], input[i+15][2], input[i+15][3], input[i+15][4] ); // Dist between Joints 1 and 15
+        row[3] = euclDist(input[i][2], input[i][3], input[i][4], input[i+15][2], input[i+15][3], input[i+15][4] ); // Dist between Joints 1 and 16
         row[4] = euclDist(input[i][2], input[i][3], input[i][4], input[i+19][2], input[i+19][3], input[i+19][4] ); // Dist between Joints 1 and 20
         distances.push_back(row);
     }
