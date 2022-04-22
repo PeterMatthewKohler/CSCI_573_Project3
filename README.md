@@ -1,9 +1,11 @@
-
 Compilation and Execution Instructions: \
+\
 1.) Extract the folder from the tarball into a single location. Ensure that all the files extracted are in the same folder. \
 There should be five. 3 .cpp programs (rad.cpp, hjpd.cpp, and hod.cpp). There should be 1 folder called "dataset" and then a README. \
 2.) To compile each of the programs use the following commands in a linux terminal: \
+\
 NOTE: Each of these programs requires an input argument of either "train" or "test". Selecting "train" will use the training dataset, "test" will use the testing dataset. \
+\
 RAD: \
 g++ -std=c++11 rad.cpp -o RAD \
 To run in terminal: ./RAD (input arg: "train" or "test") \
@@ -14,8 +16,7 @@ HOD: \
 g++ -std=c++11 hod.cpp -o HOD \
 To run in terminal: ./HOD (input arg: "train" or "test") \
 \
-\
-Implementation Information:
+Implementation Information: \
 For detected NAN values, the whole frame containing a single NAN value is deleted. \
 RAD: \
 The Joints used for the angle and distance calculations are the joints 1, 4, 8, 12, 16, and 20. \
