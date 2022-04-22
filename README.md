@@ -9,13 +9,13 @@ NOTE: Each of these programs requires an input argument of either "train" or "te
 \
 RAD: \
 g++ -std=c++11 rad.cpp -o RAD \
-To run in terminal: ./RAD (input arg: "train" or "test") \
+To run in terminal after compiling: ./RAD (input arg: "train" or "test") \
 HJPD: \
 g++ -std=c++11 hjpd.cpp -o HJPD  \
-To run in terminal: ./HJPD (input arg: "train or "test")\
+To run in terminal after compiling: ./HJPD (input arg: "train or "test")\
 HOD: \
 g++ -std=c++11 hod.cpp -o HOD \
-To run in terminal: ./HOD (input arg: "train" or "test") \
+To run in terminal after compiling: ./HOD (input arg: "train" or "test") \
 \
 Implementation Information: \
 For detected NAN values, the whole frame containing even a single NAN value is deleted. \
