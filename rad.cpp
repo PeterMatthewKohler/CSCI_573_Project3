@@ -24,6 +24,109 @@ struct jointCoord {  // Struct Holding Coordinates of Inidividual Joints
         jointCoord(float x_in, float y_in, float z_in) {x = x_in; y = y_in; z = z_in;}   // Constructor
 };
 
+// Prototypes
+vector<string> glob(const string& pattern);
+Matrix getData(string filename);
+Matrix checkNAN(Matrix data);
+float euclDist(float x1, float y1, float z1, float x2, float y2, float z2);
+float magnitude(vector<float> input);
+float dotProduct(vector<float> input1, vector<float> input2);
+Matrix calcDistances(Matrix& input);
+Matrix calcAngles(Matrix& input);
+Row computeHistogram(Matrix& input, int frames, int index);
+string getcwd();
+
+// Main Function
+int main(int argc, char** argv) {
+    // Determine Working Directory Path
+    string workingDirectory = getcwd();
+    string outFileName;
+    ofstream output_file;
+    // Based on argument inputs either work on Test or Train datasets
+    if (argc > 1) {
+        if (!strcmp(argv[1], "train")) {
+            workingDirectory.append("/dataset/train");
+            std::cout << "Using training dataset." << endl;
+            // Output File
+            output_file.open("rad_d1");
+            outFileName = "rad_d1";
+
+            }
+        else if (!strcmp(argv[1], "test")) {
+            workingDirectory.append("/dataset/test");
+            std::cout << "Using testing dataset." << endl;
+            // Output File
+            output_file.open("rad_d1.t");
+            outFileName = "rad_d1.t";
+        }
+        else {
+            //workingDirectory.append("/dataset/test");
+            std::cout << "No input argument given. Defaulting to training data." << endl;
+            // Output File
+            output_file.open("rad_d1");
+            outFileName = "rad_d1";
+        }
+    }
+
+    // Set new working directory
+    chdir(workingDirectory.c_str()); 
+
+    // Arrays to Store data and histograms
+    Matrix temp_data_array;
+    Matrix temp_dist_array;
+    Matrix temp_angle_array;
+    Matrix final_data_array;
+    
+    Row featureVector;
+    Row tempDistH;
+    Row finalDistH;
+    Row tempAngH;
+    Row finalAngH;
+
+    int frames; // Num Frames per text file
+    // Get filenames of all textfiles in directory
+    vector<string> result = glob("*skeleton_proj.txt"); 
+    for(size_t i = 0; i< result.size(); ++i){
+        std::cout << "Opening file: " << result[i] << '\n';
+        temp_data_array = getData(result[i]);               // Get data values from individual text file
+        final_data_array = checkNAN(temp_data_array);        // Check for NaN values in joint data, and delete individual joint if found.
+        
+        frames = final_data_array.size()/20;                 // Calc total number of frames
+        temp_dist_array = calcDistances(final_data_array);   // Calculate distances
+        temp_angle_array = calcAngles(final_data_array);     // Calculate angles
+        // Generate Distance Histograms
+        for (int i = 0; i < 5; i++) {
+            tempDistH = computeHistogram(temp_dist_array, frames, i);  // Compute Histogram for Individual Distances
+            finalDistH.insert(finalDistH.end(), tempDistH.begin(), tempDistH.end());    // Store Histogram
+        }
+        // Place Distance Histograms into 1D Vector
+        featureVector.insert(featureVector.end(), finalDistH.begin(), finalDistH.end());
+        // Generate Angle Histograms
+        for (int i = 0; i < 5; i++) {
+            tempAngH = computeHistogram(temp_angle_array, frames, i);  // Compute Histogram for Angles
+            finalAngH.insert(finalAngH.end(), tempAngH.begin(), tempAngH.end());
+        }
+        // Append Angle Histograms into same 1D Vector
+        featureVector.insert(featureVector.end(), finalAngH.begin(), finalAngH.end());
+
+        // When Finished Populating Feature Vector, Write to File text.txt in directory.
+        for (const auto &value : featureVector) {
+            output_file << value << " ";
+        }
+        output_file << "\n";    // New line for next feature vector
+
+        // Clear Histogram containers
+        finalDistH.clear();
+        finalAngH.clear();
+        featureVector.clear();
+
+    }
+    
+    // Close file
+    output_file.close();
+    std::cout << "All done. Writing feature vectors to file: " << outFileName << endl;
+
+}
 
 vector<string> glob(const string& pattern) {
     glob_t glob_result = {0}; // zero initialize
@@ -44,7 +147,6 @@ vector<string> glob(const string& pattern) {
     // done
     return filenames;
 }
-
 
 Matrix getData(string filename) {
     // Define Matrix to hold data for this text file
@@ -140,8 +242,6 @@ Matrix calcDistances(Matrix& input) {
         row[4] = euclDist(input[i][2], input[i][3], input[i][4], input[i+19][2], input[i+19][3], input[i+19][4] ); // Dist between Joints 1 and 20
         distances.push_back(row);
     }
-
-
     return distances;
 }
 
@@ -177,7 +277,7 @@ Matrix calcAngles(Matrix& input) {
     return angles;
 }
 
-vector<float> computeHistogram(Matrix& input, int frames, int index) {
+Row computeHistogram(Matrix& input, int frames, int index) {
     // Determine number of bins
     int numData = input.size();   // 5 data points per row
     int bins = sqrt(numData);       // Number of bins determined by square root of number of data points
@@ -208,7 +308,6 @@ vector<float> computeHistogram(Matrix& input, int frames, int index) {
     
 }
 
-
 // Function to cleanly get working directory
 string getcwd()
  {
@@ -218,106 +317,6 @@ string getcwd()
      delete[] buff;                 // Always remember to delete! :)
      return out;
  }
-
-
-
-int main(int argc, char** argv) {
-    // Determine Working Directory Path
-    string workingDirectory = getcwd();
-    string outFileName;
-    ofstream output_file;
-    // Based on argument inputs either work on Test or Train datasets
-    if (argc > 1) {
-        std::cout << argv[1] << endl;
-        std::cout << strcmp(argv[1], "train") << endl;
-        if (!strcmp(argv[1], "train")) {
-            workingDirectory.append("/dataset/train");
-            std::cout << "Using training dataset." << endl;
-            // Output File
-            output_file.open("rad_d1");
-            outFileName = "rad_d1";
-
-            }
-        else if (!strcmp(argv[1], "test")) {
-            workingDirectory.append("/dataset/test");
-            std::cout << "Using testing dataset." << endl;
-            // Output File
-            output_file.open("rad_d1.t");
-            outFileName = "rad_d1.t";
-        }
-        else {
-            //workingDirectory.append("/dataset/test");
-            std::cout << "No input argument given. Defaulting to training data." << endl;
-            // Output File
-            output_file.open("rad_d1");
-            outFileName = "rad_d1";
-        }
-    }
-
-    // Set new working directory
-    chdir(workingDirectory.c_str()); 
-
-    // Arrays to Store data and histograms
-    Matrix temp_data_array;
-    Matrix temp_dist_array;
-    Matrix temp_angle_array;
-    Matrix final_data_array;
-    
-    Row featureVector;
-    Row tempDistH;
-    Row finalDistH;
-    Row tempAngH;
-    Row finalAngH;
-
-    int frames; // Num Frames per text file
-    // Get filenames of all textfiles in directory
-    vector<string> result = glob("*skeleton_proj.txt"); 
-    for(size_t i = 0; i< result.size(); ++i){
-        std::cout << "Opening file: " << result[i] << '\n';
-        temp_data_array = getData(result[i]);               // Get data values from individual text file
-        final_data_array = checkNAN(temp_data_array);        // Check for NaN values in joint data, and delete individual joint if found.
-        
-        frames = final_data_array.size()/20;                 // Calc total number of frames
-        temp_dist_array = calcDistances(final_data_array);   // Calculate distances
-        temp_angle_array = calcAngles(final_data_array);     // Calculate angles
-        // Generate Distance Histograms
-        for (int i = 0; i < 5; i++) {
-            tempDistH = computeHistogram(temp_dist_array, frames, i);  // Compute Histogram for Individual Distances
-            finalDistH.insert(finalDistH.end(), tempDistH.begin(), tempDistH.end());    // Store Histogram
-        }
-        // Place Distance Histograms into 1D Vector
-        featureVector.insert(featureVector.end(), finalDistH.begin(), finalDistH.end());
-        // Generate Angle Histograms
-        for (int i = 0; i < 5; i++) {
-            tempAngH = computeHistogram(temp_angle_array, frames, i);  // Compute Histogram for Angles
-            finalAngH.insert(finalAngH.end(), tempAngH.begin(), tempAngH.end());
-        }
-        // Append Angle Histograms into same 1D Vector
-        featureVector.insert(featureVector.end(), finalAngH.begin(), finalAngH.end());
-
-        // When Finished Populating Feature Vector, Write to File text.txt in directory.
-        for (const auto &value : featureVector) {
-            output_file << value << " ";
-        }
-
-        output_file << "\n";    // New line for next feature vector
-
-        // Clear Histogram containers
-        finalDistH.clear();
-        finalAngH.clear();
-        featureVector.clear();
-
-    }
-
-    // Close file
-    output_file.close();
-    std::cout << "All done. Writing feature vectors to file: " << outFileName << endl;
-
-}
-
-
-
-
 
 
 
