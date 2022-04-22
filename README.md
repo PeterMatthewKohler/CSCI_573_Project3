@@ -29,4 +29,4 @@ The histogram is normalized according to the total number of data points \
 HOD: \
 The number of bins used in the HOD histograms is set to a static 8 bins. \
 The bin width is 45 degrees per bin. \
-The histogram uses the distance's magnitude as the real-value count and then is normalized by the total distance traveled in the joint's trajectory. \
+The histogram uses the distance's magnitude as the real-value count and then is normalized by the total distance traveled in the joint's trajectory.
