@@ -18,7 +18,7 @@ g++ -std=c++11 hod.cpp -o HOD \
 To run in terminal: ./HOD (input arg: "train" or "test") \
 \
 Implementation Information: \
-For detected NAN values, the whole frame containing a single NAN value is deleted. \
+For detected NAN values, the whole frame containing even a single NAN value is deleted. \
 RAD: \
 The Joints used for the angle and distance calculations are the joints 1, 4, 8, 12, 16, and 20. \
 HJPD: \
