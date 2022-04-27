@@ -36,7 +36,7 @@ Matrix calcAngles(Matrix& input);
 Row computeHistogram(Matrix& input, int frames, int index);
 string getcwd();
 
-// Main Function
+// ------- Main Function --------- //
 int main(int argc, char** argv) {
     // Determine Working Directory Path
     string workingDirectory = getcwd();

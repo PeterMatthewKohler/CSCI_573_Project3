@@ -40,7 +40,7 @@ float calcAngle(float x1, float y1, float x2, float y2);
 Matrix computeHistogram(Array& input);
 string getcwd();
 
-// Start of Main Function
+// ------- Main Function --------- //
 int main(int argc, char** argv) {
     // Determine Working Directory Path
     string workingDirectory = getcwd();

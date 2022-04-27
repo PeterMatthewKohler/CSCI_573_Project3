@@ -31,7 +31,7 @@ Matrix jointPosDiff(Matrix& input, string coord);
 Row computeHistogram(Matrix& input, int frames);
 string getcwd();
 
-// Main Function
+// ------- Main Function --------- //
 int main(int argc, char** argv) {
     // Determine Working Directory Path
     string workingDirectory = getcwd();
