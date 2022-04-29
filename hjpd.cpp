@@ -219,8 +219,9 @@ Matrix jointPosDiff(Matrix& input, string coord) {
 // Histogram of X, Y, or Z
 Row computeHistogram(Matrix& input, int frames) {
     // Determine number of bins
-    int numData = input.size();   // 5 data points per row
-    int bins = sqrt(numData);       // Number of bins determined by square root of number of data points
+    int numData = input.size();   // Number of Frames, 19 joint distances per frame
+    int bins = 15;
+    //cout << "Numdata: " << numData << " bins: " << bins << endl;
     float minVal, maxVal;
 
 
@@ -247,10 +248,9 @@ Row computeHistogram(Matrix& input, int frames) {
     float sum = 0;
     // Normalize Histogram by total frame count
     for (int i = 0; i < histogram.size(); i++) {
-        histogram[i] /= frames;
+        histogram[i] /= frames*19;  // Total number of frames * total number of joint distances per row
         sum += histogram[i];
     }
-
     return histogram;
     
 }

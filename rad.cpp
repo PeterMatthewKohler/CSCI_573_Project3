@@ -280,7 +280,8 @@ Matrix calcAngles(Matrix& input) {
 Row computeHistogram(Matrix& input, int frames, int index) {
     // Determine number of bins
     int numData = input.size();   // 5 data points per row
-    int bins = sqrt(numData);       // Number of bins determined by square root of number of data points
+    //int bins = ceil(log2(numData));       // Number of bins determined by square root of number of data points
+    int bins = 16;
     float minVal, maxVal;
     minVal = maxVal = input[0][index];
 

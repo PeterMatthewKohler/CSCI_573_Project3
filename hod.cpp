@@ -491,8 +491,8 @@ float calcAngle(float x1, float y1, float x2, float y2){
 Matrix computeHistogram(Array& input) {
     Matrix outMat;  // Output matrix
     // Bin number is 8;
-    int bins = 8;
-    int binWidth = 45;  // Degrees
+    int bins = 25;
+    int binWidth = floor(360/bins);  // Degrees
     int frames = input[0][0].size();
 
     // Populate the Histogram
