@@ -33,7 +33,7 @@ The bin width is 45 degrees per bin. \
 The histogram uses the distance's magnitude as the real-value count and then is normalized by the total distance traveled in the joint's trajectory.
 
 SVMF: \
-Function to format the data created in deliverable one. Follows the required libSVM format of:
+Function to format the data created in deliverable one. Follows the required libSVM format of: \
 [label] [index1]:[value1] [index2]:[value2]...
 
 
